@@ -273,3 +273,30 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
 }
+
+/* added - GC */
+nav {
+  line-height: 80px;
+}
+.filter-options {
+  padding-top: 1rem;
+}
+@supports (display: grid) {
+  #restaurants-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(334px, 1fr));
+    grid-auto-flow: dense;
+    justify-items: center;
+  }
+}
+@media screen and (max-width: 40rem) {
+  .filter-options {
+    text-align: center;
+  }
+  #neighborhoods-select,
+  #cuisines-select {
+    box-sizing: border-box;
+    width: calc(50% - 40px);
+    display: inline-block;
+  }
+}
