@@ -275,6 +275,12 @@ nav h1 a {
 }
 
 /* added - GC */
+img,
+embed,
+object,
+video {
+  max-width: 100%;
+}
 nav {
   line-height: 80px;
 }
