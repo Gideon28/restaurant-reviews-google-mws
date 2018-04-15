@@ -20,7 +20,7 @@ module.exports = function(grunt) {
             },
             {
               width: 610,
-              suffix: "_lg",
+              rename: false,
               quality: 70
             },
             {
