@@ -1,0 +1,31 @@
+{
+  "name": "restaurant-reviews-app",
+  "version": "1.0.0",
+  "description": "Restaurant review app solved by Gideon Caspi for the Udacity Mobile Web Specialist course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gideon28/restaurant-reviews-google-mws.git"
+  },
+  "author": "Gideon Caspi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gideon28/restaurant-reviews-google-mws/issues"
+  },
+  "homepage": "https://github.com/Gideon28/restaurant-reviews-google-mws#readme",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-mkdir": "^1.0.0"
+  },
+  "dependencies": {
+    "grunt-responsive-images": "^1.10.1"
+  }
+}
