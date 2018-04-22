@@ -21,15 +21,15 @@
 
   <main id="maincontent">
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" role="application" title="Google Map - Restaurants"></div>
     </section>
     <section>
       <div class="filter-options">
         <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" tabindex="1">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" tabindex="2">
           <option value="all">All Cuisines</option>
         </select>
       </div>
@@ -40,51 +40,7 @@
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs0zgVUVDyEfvrOCdFwNitAramDYi9exw&libraries=places&callback=initMap"></script>
-  <script>
-    (function () {
-      if (!navigator.serviceWorker) return;
-
-      const swController = function() {
-
-        _updateReady = function(worker) {
-          // show message
-          console.log('service worker update ready...')
-          worker.postMessage({ action: 'skipWaiting' });
-        }
-
-        _trackInstalling = function(worker) {
-          const controller = this;
-          worker.addEventListener('statechange', function() {
-            if (worker.state == 'installed') {
-              controller._updateReady(worker);
-            }
-          })
-        }
-
-        navigator.serviceWorker.register('/sw.js').then(function (reg) {
-          // registration successful
-          console.log('Service worker registered');
-
-          if (!navigator.serviceWorker.controller) return;
-
-          if (reg.waiting) {
-            // update is available...
-            // TODO: popup with "new version available" message
-            this._updateReady(reg.waiting);
-            return;
-          }
-
-          if (reg.installing) {
-            this._trackInstalling(reg.installing);
-          }
-        }, function (err) {
-          // registration failed
-          console.log('Service worker registration failed with message: ' + err);
-        });
-      }
-      swController();
-    })();
-  </script>
+  <script src="app.js"></script>
 
   <footer id="footer">
     Copyright (c) 2017
