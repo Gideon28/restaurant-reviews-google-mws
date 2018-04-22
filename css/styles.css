@@ -378,6 +378,26 @@ nav {
   box-shadow: 0 0 8px 5px rgba(0, 0, 0, 0.05);
 }
 
+.skip-map {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  height: 1px;
+  width: 1px;
+  text-align: left;
+  overflow: hidden;
+}
+
+a.skip-map:active,
+a.skip-map:focus,
+a.skip-map:hover {
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
 @supports (display: grid) {
   #restaurants-list {
     display: grid;
