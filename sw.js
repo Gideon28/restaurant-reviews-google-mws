@@ -8,7 +8,12 @@ self.addEventListener('install', function(event) {
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
         '/',
+        'index.html',
+        'restaurant.html',
         'js/main.js',
+        'js/dbhelper.js',
+        'js/restaurant_info.js',
+        'data/restaurants.json',
         'css/styles.css',
         'https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2',
       ]);

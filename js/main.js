@@ -179,3 +179,54 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+// add title to Google map
+window.onload = function() {
+  const iframe = document.querySelector('iframe');
+  iframe.title = "Google Maps";
+}
+
+/**
+ * Add service worker to project
+ */
+
+initServiceWorker = () => {
+  if (!navigator.serviceWorker) return;
+
+  // const controller = this;
+
+  // controller.prototype._updateReady = function(worker) {
+  //   // show message
+  //   console.log('service worker update ready...')
+  //   worker.postMessage({ action: 'skipWaiting' });
+  // }
+
+  // controller.prototype._trackInstalling = function(worker) {
+  //   worker.addEventListener('statechange', function() {
+  //     if (worker.state == 'installed') {
+  //       controller._updateReady(worker);
+  //     }
+  //   })
+  // }
+
+  navigator.serviceWorker.register('sw.js').then(function (reg) {
+    // registration successful
+    console.log('Service worker registered');
+
+    if (!navigator.serviceWorker.controller) return;
+
+    // if (reg.waiting) {
+    //   // update is available...
+    //   // TODO: popup with "new version available" message
+    //   controller._updateReady(reg.waiting);
+    //   return;
+    // }
+
+    // if (reg.installing) {
+    //   controller._trackInstalling(reg.installing);
+    // }
+  }, function (err) {
+    // registration failed
+    console.log('Service worker registration failed with message: ' + err);
+  });
+}
+initServiceWorker();
