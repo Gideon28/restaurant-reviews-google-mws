@@ -126,8 +126,8 @@ resetRestaurants = (restaurants) => {
  */
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
-  restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+  restaurants.forEach((restaurant, index) => {
+    ul.append(createRestaurantHTML(restaurant, index, restaurants.length));
   });
   addMarkersToMap();
 }
@@ -135,8 +135,10 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant) => {
+createRestaurantHTML = (restaurant, index, restaurantsCount) => {
   const li = document.createElement('li');
+  li.setAttribute('aria-posinset', index + 1);
+  li.setAttribute('aria-setsize', restaurantsCount);
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
