@@ -362,8 +362,11 @@ nav {
 
 #reviews-list li,
 #restaurants-list li {
-  /* padding: 1.5rem; */
   margin: 0 0 2rem;
+}
+
+#restaurants-list li {
+  padding: 1.5rem;
 }
 
 #reviews-list li p {
