@@ -70,6 +70,9 @@ section {
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
+
+  display: flex;
+  flex-direction: column;
 }
 
 #footer {
@@ -461,10 +464,13 @@ a.skip-map:hover {
     position: relative;
     width: 100%;
   }
+  #breadcrumb {
+    padding: 0;
+  }
   .inside #map-container {
-    height: 300px;
+    height: 400px;
     top: 0;
-    margin-top: 130px;
+    margin-top: 160px;
   }
   #restaurant-container,
   #reviews-container {
@@ -476,6 +482,14 @@ a.skip-map:hover {
     box-sizing: border-box;
     width: 100%;
     max-width: 330px;
+  }
+  #reviews-list li .review-header p {
+    font-size: 1.4rem;
+    padding: .5rem;
+  }
+
+  #reviews-list li .review-header p.review-date {
+    font-size: 1rem;
   }
 }
 
