@@ -140,10 +140,12 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
   li.setAttribute('aria-posinset', index + 1);
   li.setAttribute('aria-setsize', restaurantsCount);
 
-  const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.name;
+  const image = document.createElement('picture');
+  const imageSrc = DBHelper.imageUrlForRestaurant(restaurant);
+  image.innerHTML = `
+    <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
+    <img alt="${restaurant.name}" src="${imageSrc}-280_sml" alt=""/>
+  `;
   li.append(image);
 
   const name = document.createElement('h1');
