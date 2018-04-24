@@ -144,7 +144,7 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
   const imageSrc = DBHelper.imageUrlForRestaurant(restaurant);
   image.innerHTML = `
     <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
-    <img alt="${restaurant.name}" src="${imageSrc}-280_sml" alt=""/>
+    <img alt="${restaurant.name}" src="${imageSrc}-280_sml.jpg">
   `;
   li.append(image);
 
