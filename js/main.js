@@ -196,21 +196,19 @@ window.onload = function() {
 initServiceWorker = () => {
   if (!navigator.serviceWorker) return;
 
-  // const controller = this;
+  const swUpdateReady = function(worker) {
+    // show message
+    console.log('service worker update ready...')
+    worker.postMessage({ action: 'skipWaiting' });
+  }
 
-  // controller.prototype._updateReady = function(worker) {
-  //   // show message
-  //   console.log('service worker update ready...')
-  //   worker.postMessage({ action: 'skipWaiting' });
-  // }
-
-  // controller.prototype._trackInstalling = function(worker) {
-  //   worker.addEventListener('statechange', function() {
-  //     if (worker.state == 'installed') {
-  //       controller._updateReady(worker);
-  //     }
-  //   })
-  // }
+  const swTrackInstalling = function(worker) {
+    worker.addEventListener('statechange', function() {
+      if (worker.state == 'installed') {
+        swUpdateReady(worker);
+      }
+    })
+  }
 
   navigator.serviceWorker.register('sw.js').then(function (reg) {
     // registration successful
@@ -218,16 +216,29 @@ initServiceWorker = () => {
 
     if (!navigator.serviceWorker.controller) return;
 
-    // if (reg.waiting) {
-    //   // update is available...
-    //   // TODO: popup with "new version available" message
-    //   controller._updateReady(reg.waiting);
-    //   return;
-    // }
+    if (reg.waiting) {
+      // update is available...
+      // TODO: popup with "new version available" message
+      swUpdateReady(reg.waiting);
+      return;
+    }
 
-    // if (reg.installing) {
-    //   controller._trackInstalling(reg.installing);
-    // }
+    if (reg.installing) {
+      swTrackInstalling(reg.installing);
+    }
+
+    reg.addEventListener('updatefound', function() {
+      swTrackInstalling(reg.installing);
+    });
+
+    // Ensure refresh is called only once.
+    // Works around a bug in "force update on reload"
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (refreshing) return;
+      window.location.reload();
+      refreshing = true;
+    });
   }, function (err) {
     // registration failed
     console.log('Service worker registration failed with message: ' + err);
