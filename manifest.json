@@ -1,0 +1,25 @@
+{
+  "short_name": "Restaurant Reviews",
+  "name": "New York Restaurant Reviews App",
+  "icons": [
+    {
+      "src": "/img/app-icon-1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/img/app-icon-2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/img/app-icon-4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "index.html?launcher=true",
+  "background_color": "#3397db",
+  "theme_color": "#3397db",
+  "display": "standalone"
+}

@@ -305,7 +305,7 @@ nav h1 a {
 #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
+  padding: 200px 40px 30px;
   width: 50%;
 }
 
@@ -313,7 +313,7 @@ nav h1 a {
   padding: 30px 40px 80px;
 }
 
-#reviews-container h2 {
+#reviews-container h3 {
   color: #f58500;
   font-size: 24pt;
   font-weight: 300;
@@ -464,13 +464,16 @@ a.skip-map:hover {
     position: relative;
     width: 100%;
   }
+  nav {
+    line-height: 60px;
+  }
   #breadcrumb {
     padding: 0;
   }
   .inside #map-container {
     height: 400px;
     top: 0;
-    margin-top: 160px;
+    margin-top: 120px;
   }
   #restaurant-container,
   #reviews-container {
