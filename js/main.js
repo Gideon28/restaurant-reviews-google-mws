@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', event => {
 // 	});
 // };
 
-const logError = function(e, part) {
+logError = (e, part) => {
 	const container = document.querySelector('#maincontent');
 	const errorMsg = `<p class="network-warning">Oh no! There was an error making a requst for the ${part}</p>`;
 
@@ -34,22 +34,26 @@ const logError = function(e, part) {
 	console.log(`Error: ${e}`);
 };
 
-fetchNeighborhoods = () => {
-	fetch('http://localhost:1337/restaurants', {})
+fetchReducedList = (url, prop, callback) => {
+	fetch(url)
 		.then(response => response.json())
-		.then(response => {
-			const locations = response;
-			let neighborhoodsList = [];
+		.then(data => {
+			let reducedData = [];
 
-			locations.forEach(location => {
-				if (neighborhoodsList.includes(location.neighborhood)) return;
-
-				neighborhoodsList.push(location.neighborhood);
+			// push only unique values
+			data.forEach(obj => {
+				if (reducedData.includes(obj[prop])) return;
+				reducedData.push(obj[prop]);
 			});
 
-			fillNeighborhoodsHTML(neighborhoodsList);
+			// run method to populate list
+			callback(reducedData);
 		})
-		.catch(e => logError(e, 'neighbourhoods'));
+		.catch(e => logError(e, 'neighborhoods'));
+};
+
+fetchNeighborhoods = () => {
+	fetchReducedList('http://localhost:1337/restaurants', 'neighborhood', fillNeighborhoodsHTML);
 };
 
 /**
