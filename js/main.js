@@ -11,20 +11,8 @@ document.addEventListener('DOMContentLoaded', event => {
 });
 
 /**
- * Fetch all neighborhoods and set their HTML.
+ * Error logging - shows above map. TODO: Add styling
  */
-// fetchNeighborhoods = () => {
-// 	DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-// 		if (error) {
-// 			// Got an error
-// 			console.error(error);
-// 		} else {
-// 			self.neighborhoods = neighborhoods;
-// 			fillNeighborhoodsHTML();
-// 		}
-// 	});
-// };
-
 logError = (e, part) => {
 	const container = document.querySelector('#maincontent');
 	const errorMsg = `<p class="network-warning">Oh no! There was an error making a requst for the ${part}</p>`;
@@ -34,11 +22,15 @@ logError = (e, part) => {
 	console.log(`Error: ${e}`);
 };
 
+/**
+ * Uses fetch to return a reduced list (unique values) for dropdowns
+ */
 fetchReducedList = (url, prop, callback) => {
 	fetch(url)
 		.then(response => response.json())
 		.then(data => {
 			let reducedData = [];
+			console.table(data);
 
 			// push only unique values
 			data.forEach(obj => {
@@ -52,8 +44,26 @@ fetchReducedList = (url, prop, callback) => {
 		.catch(e => logError(e, 'neighborhoods'));
 };
 
+/**
+ * Fetch all neighborhoods and set their HTML.
+ */
+// fetchNeighborhoods = () => {
+// 	DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+// 		if (error) {
+// 			// Got an error
+// 			console.error(error);
+// 		} else {
+// 			self.neighborhoods = neighborhoods;
+// 			fillNeighborhoodsHTML();
+// 		}
+// 	});
+// };
 fetchNeighborhoods = () => {
-	fetchReducedList('http://localhost:1337/restaurants', 'neighborhood', fillNeighborhoodsHTML);
+	fetchReducedList(
+		'http://localhost:1337/restaurants',
+		'neighborhood',
+		fillNeighborhoodsHTML
+	);
 };
 
 /**
@@ -72,16 +82,19 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 /**
  * Fetch all cuisines and set their HTML.
  */
+// fetchCuisines = () => {
+// 	DBHelper.fetchCuisines((error, cuisines) => {
+// 		if (error) {
+// 			// Got an error!
+// 			console.error(error);
+// 		} else {
+// 			self.cuisines = cuisines;
+// 			fillCuisinesHTML();
+// 		}
+// 	});
+// };
 fetchCuisines = () => {
-	DBHelper.fetchCuisines((error, cuisines) => {
-		if (error) {
-			// Got an error!
-			console.error(error);
-		} else {
-			self.cuisines = cuisines;
-			fillCuisinesHTML();
-		}
-	});
+	fetchReducedList('http://localhost:1337/restaurants', 'cuisine_type', fillCuisinesHTML);
 };
 
 /**
