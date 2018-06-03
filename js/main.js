@@ -145,7 +145,7 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	const restaurantHtml = `
 		<picture>
 			<source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
-			<img src="/img/${restaurant.id}-280_sml.jpg" alt="${restaurant.name}">
+			<img src="/img/${restaurant.id}-280_sml.jpg" alt="Image of ${restaurant.name} restaurant">
 		</picture>
 		<h2>${restaurant.name}</h2>
 		<p>${restaurant.neighborhood}</p>
