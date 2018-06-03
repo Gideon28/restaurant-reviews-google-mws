@@ -27,8 +27,12 @@
     "grunt-mkdir": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
+    "gulp-clean-css": "^3.9.4",
     "gulp-eslint": "^4.0.2",
-    "gulp-sass": "^4.0.1"
+    "gulp-minify": "^2.1.0",
+    "gulp-sass": "^4.0.1",
+    "node-normalize-scss": "^8.0.0",
+    "pump": "^3.0.0"
   },
   "dependencies": {
     "grunt-responsive-images": "^1.10.1",

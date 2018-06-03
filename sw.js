@@ -1,4 +1,4 @@
-const staticCacheName = 'restaurant-app-v6';
+const staticCacheName = 'restaurant-app-v8';
 const imagesCache = 'restaurant-app-images';
 
 const allCaches = [staticCacheName, imagesCache];
@@ -10,12 +10,10 @@ self.addEventListener('install', function(event) {
         '/',
         'index.html',
         'restaurant.html',
-        'js/main.js',
-        'js/dbhelper.js',
-        'js/restaurant_info.js',
-        'data/restaurants.json',
-        'css/styles.css',
-        'https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2',
+        'dist/js/main-min.js',
+        'dist/js/dbhelper-min.js',
+        'dist/js/restaurant_info-min.js',
+        'dist/css/styles.css',
       ]);
     })
   );
