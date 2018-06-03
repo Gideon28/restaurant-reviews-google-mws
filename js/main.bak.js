@@ -11,18 +11,78 @@ document.addEventListener('DOMContentLoaded', event => {
 });
 
 /**
+ * Error logging - shows above map. TODO: Add styling
+ */
+logError = (e, part) => {
+	const container = document.querySelector('#maincontent');
+	const errorMsg = `<p class="network-warning">Oh no! There was an error making a requst for the ${part}</p>`;
+
+	container.insertAdjacentHTML('beforebegin', errorMsg);
+
+	console.log(`Error: ${e}`);
+};
+
+/**
+ * Uses fetch to return a reduced list (unique values) for dropdowns
+ */
+fetchReducedList = (url, prop, callback) => {
+	fetch(url)
+		.then(response => response.json())
+		.then(data => {
+			let reducedData = [];
+			// console.table(data);
+
+			// push only unique values
+			data.forEach(obj => {
+				if (reducedData.includes(obj[prop])) return;
+				reducedData.push(obj[prop]);
+			});
+
+			// run method to populate list
+			callback(reducedData);
+		})
+		.catch(e => logError(e, 'neighborhoods'));
+};
+
+fetchRestaurantByCuisineAndNeighborhood = (cuisine, neighborhood) => {
+	fetch('http://localhost:1337/restaurants')
+		.then(response => response.json())
+		.then(data => {
+			let restaurants = data;
+
+			if (cuisine != 'all') {
+				restaurants = restaurants.filter(r => r.cuisine_type == cuisine);
+			}
+			if (neighborhood != 'all') {
+				restaurants = restaurants.filter(r => r.neighborhood == neighborhood);
+			}
+
+			resetRestaurants(restaurants);
+			fillRestaurantsHTML();
+		})
+		.catch(e => logError(e, 'restaurants'));
+}
+
+/**
  * Fetch all neighborhoods and set their HTML.
  */
+// fetchNeighborhoods = () => {
+// 	DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+// 		if (error) {
+// 			// Got an error
+// 			console.error(error);
+// 		} else {
+// 			self.neighborhoods = neighborhoods;
+// 			fillNeighborhoodsHTML();
+// 		}
+// 	});
+// };
 fetchNeighborhoods = () => {
-	DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-		if (error) {
-			// Got an error
-			console.error(error);
-		} else {
-			self.neighborhoods = neighborhoods;
-			fillNeighborhoodsHTML();
-		}
-	});
+	fetchReducedList(
+		'http://localhost:1337/restaurants',
+		'neighborhood',
+		fillNeighborhoodsHTML
+	);
 };
 
 /**
@@ -41,16 +101,19 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 /**
  * Fetch all cuisines and set their HTML.
  */
+// fetchCuisines = () => {
+// 	DBHelper.fetchCuisines((error, cuisines) => {
+// 		if (error) {
+// 			// Got an error!
+// 			console.error(error);
+// 		} else {
+// 			self.cuisines = cuisines;
+// 			fillCuisinesHTML();
+// 		}
+// 	});
+// };
 fetchCuisines = () => {
-	DBHelper.fetchCuisines((error, cuisines) => {
-		if (error) {
-			// Got an error!
-			console.error(error);
-		} else {
-			self.cuisines = cuisines;
-			fillCuisinesHTML();
-		}
-	});
+	fetchReducedList('http://localhost:1337/restaurants', 'cuisine_type', fillCuisinesHTML);
 };
 
 /**
@@ -96,19 +159,20 @@ updateRestaurants = () => {
 	const cuisine = cSelect[cIndex].value;
 	const neighborhood = nSelect[nIndex].value;
 
-	DBHelper.fetchRestaurantByCuisineAndNeighborhood(
-		cuisine,
-		neighborhood,
-		(error, restaurants) => {
-			if (error) {
-				// Got an error!
-				console.error(error);
-			} else {
-				resetRestaurants(restaurants);
-				fillRestaurantsHTML();
-			}
-		}
-	);
+	// DBHelper.fetchRestaurantByCuisineAndNeighborhood(
+	// 	cuisine,
+	// 	neighborhood,
+	// 	(error, restaurants) => {
+	// 		if (error) {
+	// 			// Got an error!
+	// 			console.error(error);
+	// 		} else {
+	// 			resetRestaurants(restaurants);
+	// 			fillRestaurantsHTML();
+	// 		}
+	// 	}
+	// );
+	fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood);
 };
 
 /**
@@ -144,8 +208,8 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	const li = document.createElement('li');
 	const restaurantHtml = `
 		<picture>
-			<source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
-			<img src="/img/${restaurant.id}-280_sml.jpg" alt="${restaurant.name}">
+			<source srcset="/img/${restaurant.photograph}-540_sml_2x.jpg 2x">
+			<img src="/img/${restaurant.photograph}-280_sml.jpg" alt="${restaurant.name}">
 		</picture>
 		<h2>${restaurant.name}</h2>
 		<p>${restaurant.neighborhood}</p>
@@ -211,7 +275,8 @@ mapMarkerForRestaurant = (restaurant, map) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
 	restaurants.forEach(restaurant => {
 		// Add marker to the map
-		const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+		// const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+		const marker = mapMarkerForRestaurant(restaurant, self.map);
 		google.maps.event.addListener(marker, 'click', () => {
 			window.location.href = marker.url;
 		});
