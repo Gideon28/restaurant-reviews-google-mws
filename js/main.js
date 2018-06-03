@@ -30,7 +30,7 @@ fetchReducedList = (url, prop, callback) => {
 		.then(response => response.json())
 		.then(data => {
 			let reducedData = [];
-			console.table(data);
+			// console.table(data);
 
 			// push only unique values
 			data.forEach(obj => {
@@ -43,6 +43,25 @@ fetchReducedList = (url, prop, callback) => {
 		})
 		.catch(e => logError(e, 'neighborhoods'));
 };
+
+fetchRestaurantByCuisineAndNeighborhood = (cuisine, neighborhood) => {
+	fetch('http://localhost:1337/restaurants')
+		.then(response => response.json())
+		.then(data => {
+			let restaurants = data;
+
+			if (cuisine != 'all') {
+				restaurants = restaurants.filter(r => r.cuisine_type == cuisine);
+			}
+			if (neighborhood != 'all') {
+				restaurants = restaurants.filter(r => r.neighborhood == neighborhood);
+			}
+
+			resetRestaurants(restaurants);
+			fillRestaurantsHTML();
+		})
+		.catch(e => logError(e, 'restaurants'));
+}
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -140,19 +159,20 @@ updateRestaurants = () => {
 	const cuisine = cSelect[cIndex].value;
 	const neighborhood = nSelect[nIndex].value;
 
-	DBHelper.fetchRestaurantByCuisineAndNeighborhood(
-		cuisine,
-		neighborhood,
-		(error, restaurants) => {
-			if (error) {
-				// Got an error!
-				console.error(error);
-			} else {
-				resetRestaurants(restaurants);
-				fillRestaurantsHTML();
-			}
-		}
-	);
+	// DBHelper.fetchRestaurantByCuisineAndNeighborhood(
+	// 	cuisine,
+	// 	neighborhood,
+	// 	(error, restaurants) => {
+	// 		if (error) {
+	// 			// Got an error!
+	// 			console.error(error);
+	// 		} else {
+	// 			resetRestaurants(restaurants);
+	// 			fillRestaurantsHTML();
+	// 		}
+	// 	}
+	// );
+	fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood);
 };
 
 /**
@@ -186,43 +206,68 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	const li = document.createElement('li');
+	const restaurantHtml = `
+		<picture>
+			<source srcset="/img/${restaurant.photograph}-540_sml_2x.jpg 2x">
+			<img src="/img/${restaurant.photograph}-280_sml.jpg" alt="${restaurant.name}">
+		</picture>
+		<h2>${restaurant.name}</h2>
+		<p>${restaurant.neighborhood}</p>
+		<p>${restaurant.address}</p>
+		<a href="./restaurant.html?id=${restaurant.id}" aria-label="More information on ${restaurant.name} restaurant" role="button">View Details</a>
+	`;
+
+	li.innerHTML = restaurantHtml;
+
 	li.setAttribute('aria-posinset', index + 1);
 	li.setAttribute('aria-setsize', restaurantsCount);
 
-	const image = document.createElement('picture');
-	const imageSrc = DBHelper.imageUrlForRestaurant(restaurant);
-	image.innerHTML = `
-    <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
-    <img alt="Image of ${
-	restaurant.name
-} restaurant" src="${imageSrc}-280_sml.jpg">
-  `;
-	li.append(image);
+	// const image = document.createElement('picture');
+	// const imageSrc = DBHelper.imageUrlForRestaurant(restaurant);
+	// image.innerHTML = `
+  //   <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
+  //   <img alt="Image of ${restaurant.name} restaurant" src="${imageSrc}-280_sml.jpg">
+  // `;
+	// li.append(image);
 
-	const name = document.createElement('h2');
-	name.innerHTML = restaurant.name;
-	li.append(name);
+	// const name = document.createElement('h2');
+	// name.innerHTML = restaurant.name;
+	// li.append(name);
 
-	const neighborhood = document.createElement('p');
-	neighborhood.innerHTML = restaurant.neighborhood;
-	li.append(neighborhood);
+	// const neighborhood = document.createElement('p');
+	// neighborhood.innerHTML = restaurant.neighborhood;
+	// li.append(neighborhood);
 
-	const address = document.createElement('p');
-	address.innerHTML = restaurant.address;
-	li.append(address);
+	// const address = document.createElement('p');
+	// address.innerHTML = restaurant.address;
+	// li.append(address);
 
-	const more = document.createElement('a');
-	more.innerHTML = 'View Details';
-	more.setAttribute(
-		'aria-label',
-		'More information on ' + restaurant.name + ' restaurant'
-	);
-	more.setAttribute('role', 'button');
-	more.href = DBHelper.urlForRestaurant(restaurant);
-	li.append(more);
+	// const more = document.createElement('a');
+	// more.innerHTML = 'View Details';
+	// more.setAttribute(
+	// 	'aria-label',
+	// 	'More information on ' + restaurant.name + ' restaurant'
+	// );
+	// more.setAttribute('role', 'button');
+	// more.href = DBHelper.urlForRestaurant(restaurant);
+	// li.append(more);
 
 	return li;
 };
+
+/**
+ * Map marker function borrowed from DBHelper - Gideon
+ */
+mapMarkerForRestaurant = (restaurant, map) => {
+	const marker = new google.maps.Marker({
+		position: restaurant.latlng,
+		title: restaurant.name,
+		url: DBHelper.urlForRestaurant(restaurant),
+		map: map,
+		animation: google.maps.Animation.DROP
+	});
+	return marker;
+}
 
 /**
  * Add markers for current restaurants to the map.
@@ -230,7 +275,8 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 addMarkersToMap = (restaurants = self.restaurants) => {
 	restaurants.forEach(restaurant => {
 		// Add marker to the map
-		const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+		// const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+		const marker = mapMarkerForRestaurant(restaurant, self.map);
 		google.maps.event.addListener(marker, 'click', () => {
 			window.location.href = marker.url;
 		});
