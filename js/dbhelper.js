@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Common database helper functions.
  */

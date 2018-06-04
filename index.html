@@ -32,7 +32,8 @@
 
   <main id="maincontent">
     <section id="map-container">
-      <div id="map" role="application" title="Google Map - Restaurants"></div>
+      <div id="map" role="application" title="Google Map - Restaurants">
+      </div>
     </section>
     <section>
       <div class="filter-options">
@@ -50,7 +51,7 @@
 
   <script type="application/javascript" charset="utf-8" src="dist/js/dbhelper-min.js"></script>
   <script type="application/javascript" charset="utf-8" src="dist/js/main-min.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=insertStaticMap"></script>
 
   <footer id="footer">
     Copyright (c) 2017
@@ -59,6 +60,24 @@
     </a> All Rights Reserved.
   </footer>
 
+  <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function() {
+      (function(w, d){
+        var b = d.getElementsByTagName('body')[0];
+        var s = d.createElement("script"); s.async = true;
+        var v = !("IntersectionObserver" in w) ? "8.7.1" : "10.5.2";
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/" + v + "/lazyload.min.js";
+        w.lazyLoadOptions = {
+          element_selector: 'img.lazy'
+        }; // Your options here. See "recipes" for more information about async.
+        b.appendChild(s);
+      }(window, document));
+    });
+  </script>
 </body>
 
 </html>

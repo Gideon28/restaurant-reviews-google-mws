@@ -1,14 +1,16 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var browserSync = require('browser-sync').create();
-var eslint = require('gulp-eslint');
-var minify = require('gulp-minify');
-var cleanCSS = require('gulp-clean-css');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const browserSync = require('browser-sync').create();
+const eslint = require('gulp-eslint');
+const minify = require('gulp-minify');
+const cleanCSS = require('gulp-clean-css');
+const babel = require('gulp-babel');
 
-gulp.task('default', ['styles', 'lint'], function() {
+gulp.task('default', ['styles'], function() {
   gulp.watch('sass/**/*/*.scss', ['styles']);
-  gulp.watch('js/**/*.js', ['lint', 'scripts']);
+  // gulp.watch('js/**/*.js', ['lint', 'scripts']);
+  gulp.watch('js/**/*.js', ['scripts']);
 
   browserSync.init({
     server: './'
@@ -16,7 +18,8 @@ gulp.task('default', ['styles', 'lint'], function() {
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(['js/**/*.js'])
+  return gulp.src(['!js/main.bak.js', '!js/lazyload.js', 'js/**/*.js'])
+    .pipe(babel())
     .pipe(minify())
     .pipe(gulp.dest('dist/js/'))
 })

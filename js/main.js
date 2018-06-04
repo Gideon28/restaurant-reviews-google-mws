@@ -1,6 +1,8 @@
+/* eslint-disable */
 let restaurants, neighborhoods, cuisines;
 var map;
 var markers = [];
+let mapToggled = false;
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -71,6 +73,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+	mapToggled = true;
 	let loc = {
 		lat: 40.722216,
 		lng: -73.987501
@@ -80,8 +83,29 @@ window.initMap = () => {
 		center: loc,
 		scrollwheel: false
 	});
+	google.maps.event.addListenerOnce(self.map, 'idle', function() {
+		addIframeTitle();
+	});
 	updateRestaurants();
 };
+
+window.insertStaticMap = () => {
+	let mapImg = document.createElement('img');
+	const mapDiv = document.getElementById('map');
+
+	let {width, height} = mapDiv.getBoundingClientRect();
+
+	mapImg.src = `https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&size=${width}x${height}`;
+	mapImg.alt = 'New York Restaurant Reviews';
+	mapImg.height = height;
+	mapImg.width = width;
+	mapDiv.appendChild(mapImg);
+
+	// create dynamic map on map image click
+	mapDiv.addEventListener('click', initMap);
+
+	updateRestaurants();
+}
 
 /**
  * Update page and map for current restaurants.
@@ -134,7 +158,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 	restaurants.forEach((restaurant, index) => {
 		ul.append(createRestaurantHTML(restaurant, index, restaurants.length));
 	});
-	addMarkersToMap();
+	if (mapToggled) {
+		addMarkersToMap();
+	}
 };
 
 /**
@@ -142,6 +168,12 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	const li = document.createElement('li');
+
+	{/* <picture>
+		<source data-srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
+		<img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/img/${restaurant.id}-280_sml.jpg" alt="Image of ${restaurant.name} restaurant">
+	</picture> */}
+
 	const restaurantHtml = `
 		<picture>
 			<source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
@@ -219,7 +251,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 	});
 };
 // add title to Google map
-window.onload = function() {
+addIframeTitle = () => {
 	const iframe = document.querySelector('iframe');
 	iframe.title = 'Google Maps';
 };

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Common database helper functions.
  */
@@ -37,13 +38,10 @@ class DBHelper {
   //   xhr.send();
   // }
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
-      .then(response => response.json())
-      .then(data => callback(null, data))
-      .catch(e => {
-        const error = `Request failed with message ${e}`;
-        callback(error, null);
-      });
+    fetch(DBHelper.DATABASE_URL).then(response => response.json()).then(data => callback(null, data)).catch(e => {
+      const error = `Request failed with message ${e}`;
+      callback(error, null);
+    });
   }
 
   /**
@@ -102,11 +100,7 @@ class DBHelper {
   /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
    */
-  static fetchRestaurantByCuisineAndNeighborhood(
-    cuisine,
-    neighborhood,
-    callback
-  ) {
+  static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -136,13 +130,9 @@ class DBHelper {
         callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
-        const neighborhoods = restaurants.map(
-          (v, i) => restaurants[i].neighborhood
-        );
+        const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
         // Remove duplicates from neighborhoods
-        const uniqueNeighborhoods = neighborhoods.filter(
-          (v, i) => neighborhoods.indexOf(v) == i
-        );
+        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
         callback(null, uniqueNeighborhoods);
       }
     });
@@ -160,9 +150,7 @@ class DBHelper {
         // Get all cuisines from all restaurants
         const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
         // Remove duplicates from cuisines
-        const uniqueCuisines = cuisines.filter(
-          (v, i) => cuisines.indexOf(v) == i
-        );
+        const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i);
         callback(null, uniqueCuisines);
       }
     });

@@ -1,6 +1,8 @@
+/* eslint-disable */
 let restaurants, neighborhoods, cuisines;
 var map;
 var markers = [];
+let mapToggled = false;
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -71,6 +73,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+	mapToggled = true;
 	let loc = {
 		lat: 40.722216,
 		lng: -73.987501
@@ -80,6 +83,27 @@ window.initMap = () => {
 		center: loc,
 		scrollwheel: false
 	});
+	google.maps.event.addListenerOnce(self.map, 'idle', function () {
+		addIframeTitle();
+	});
+	updateRestaurants();
+};
+
+window.insertStaticMap = () => {
+	let mapImg = document.createElement('img');
+	const mapDiv = document.getElementById('map');
+
+	let { width, height } = mapDiv.getBoundingClientRect();
+
+	mapImg.src = `https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&size=${width}x${height}`;
+	mapImg.alt = 'New York Restaurant Reviews';
+	mapImg.height = height;
+	mapImg.width = width;
+	mapDiv.appendChild(mapImg);
+
+	// create dynamic map on map image click
+	mapDiv.addEventListener('click', initMap);
+
 	updateRestaurants();
 };
 
@@ -96,19 +120,15 @@ updateRestaurants = () => {
 	const cuisine = cSelect[cIndex].value;
 	const neighborhood = nSelect[nIndex].value;
 
-	DBHelper.fetchRestaurantByCuisineAndNeighborhood(
-		cuisine,
-		neighborhood,
-		(error, restaurants) => {
-			if (error) {
-				// Got an error!
-				console.error(error);
-			} else {
-				resetRestaurants(restaurants);
-				fillRestaurantsHTML();
-			}
+	DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
+		if (error) {
+			// Got an error!
+			console.error(error);
+		} else {
+			resetRestaurants(restaurants);
+			fillRestaurantsHTML();
 		}
-	);
+	});
 };
 
 /**
@@ -134,7 +154,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 	restaurants.forEach((restaurant, index) => {
 		ul.append(createRestaurantHTML(restaurant, index, restaurants.length));
 	});
-	addMarkersToMap();
+	if (mapToggled) {
+		addMarkersToMap();
+	}
 };
 
 /**
@@ -142,6 +164,12 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	const li = document.createElement('li');
+
+	{/* <picture>
+  <source data-srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
+  <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/img/${restaurant.id}-280_sml.jpg" alt="Image of ${restaurant.name} restaurant">
+  </picture> */}
+
 	const restaurantHtml = `
 		<picture>
 			<source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
@@ -161,9 +189,9 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
 	// const image = document.createElement('picture');
 	// const imageSrc = DBHelper.imageUrlForRestaurant(restaurant);
 	// image.innerHTML = `
-  //   <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
-  //   <img alt="Image of ${restaurant.name} restaurant" src="${imageSrc}-280_sml.jpg">
-  // `;
+	//   <source srcset="${imageSrc}-540_sml_2x.jpg 2x">
+	//   <img alt="Image of ${restaurant.name} restaurant" src="${imageSrc}-280_sml.jpg">
+	// `;
 	// li.append(image);
 
 	// const name = document.createElement('h2');
@@ -203,7 +231,7 @@ mapMarkerForRestaurant = (restaurant, map) => {
 		animation: google.maps.Animation.DROP
 	});
 	return marker;
-}
+};
 
 /**
  * Add markers for current restaurants to the map.
@@ -219,7 +247,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 	});
 };
 // add title to Google map
-window.onload = function() {
+addIframeTitle = () => {
 	const iframe = document.querySelector('iframe');
 	iframe.title = 'Google Maps';
 };
@@ -231,55 +259,52 @@ window.onload = function() {
 initServiceWorker = () => {
 	if (!navigator.serviceWorker) return;
 
-	const swUpdateReady = function(worker) {
+	const swUpdateReady = function (worker) {
 		// show message
 		console.log('service worker update ready...');
 		worker.postMessage({ action: 'skipWaiting' });
 	};
 
-	const swTrackInstalling = function(worker) {
-		worker.addEventListener('statechange', function() {
+	const swTrackInstalling = function (worker) {
+		worker.addEventListener('statechange', function () {
 			if (worker.state == 'installed') {
 				swUpdateReady(worker);
 			}
 		});
 	};
 
-	navigator.serviceWorker.register('sw.js').then(
-		function(reg) {
-			// registration successful
-			console.log('Service worker registered');
+	navigator.serviceWorker.register('sw.js').then(function (reg) {
+		// registration successful
+		console.log('Service worker registered');
 
-			if (!navigator.serviceWorker.controller) return;
+		if (!navigator.serviceWorker.controller) return;
 
-			if (reg.waiting) {
-				// update is available...
-				// TODO: popup with "new version available" message
-				swUpdateReady(reg.waiting);
-				return;
-			}
-
-			if (reg.installing) {
-				swTrackInstalling(reg.installing);
-			}
-
-			reg.addEventListener('updatefound', function() {
-				swTrackInstalling(reg.installing);
-			});
-
-			// Ensure refresh is called only once.
-			// Works around a bug in "force update on reload"
-			let refreshing;
-			navigator.serviceWorker.addEventListener('controllerchange', function() {
-				if (refreshing) return;
-				window.location.reload();
-				refreshing = true;
-			});
-		},
-		function(err) {
-			// registration failed
-			console.log('Service worker registration failed with message: ' + err);
+		if (reg.waiting) {
+			// update is available...
+			// TODO: popup with "new version available" message
+			swUpdateReady(reg.waiting);
+			return;
 		}
-	);
+
+		if (reg.installing) {
+			swTrackInstalling(reg.installing);
+		}
+
+		reg.addEventListener('updatefound', function () {
+			swTrackInstalling(reg.installing);
+		});
+
+		// Ensure refresh is called only once.
+		// Works around a bug in "force update on reload"
+		let refreshing;
+		navigator.serviceWorker.addEventListener('controllerchange', function () {
+			if (refreshing) return;
+			window.location.reload();
+			refreshing = true;
+		});
+	}, function (err) {
+		// registration failed
+		console.log('Service worker registration failed with message: ' + err);
+	});
 };
 initServiceWorker();
