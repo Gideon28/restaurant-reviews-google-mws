@@ -73,7 +73,8 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-	mapToggled = true;
+	if (mapToggled) return;
+
 	let loc = {
 		lat: 40.722216,
 		lng: -73.987501
@@ -86,6 +87,8 @@ window.initMap = () => {
 	google.maps.event.addListenerOnce(self.map, 'idle', function () {
 		addIframeTitle();
 	});
+
+	mapToggled = true;
 	updateRestaurants();
 };
 
@@ -313,3 +316,15 @@ initServiceWorker = () => {
 	});
 };
 initServiceWorker();
+
+/* Add to homescreen update */
+let installPromptEvent;
+
+window.addEventListener('beforeinstallprompt', event => {
+	// Prevent Chrome <= 67 from automatically showing the prompt
+	event.preventDefault();
+	// Stash the event so it can be triggered later.
+	installPromptEvent = event;
+	// Update the install UI to notify the user app can be installed
+	document.querySelector('#install-button').disabled = false;
+});

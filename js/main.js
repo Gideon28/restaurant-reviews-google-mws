@@ -73,7 +73,8 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-	mapToggled = true;
+	if (mapToggled) return;
+
 	let loc = {
 		lat: 40.722216,
 		lng: -73.987501
@@ -86,6 +87,8 @@ window.initMap = () => {
 	google.maps.event.addListenerOnce(self.map, 'idle', function() {
 		addIframeTitle();
 	});
+
+	mapToggled = true;
 	updateRestaurants();
 };
 
