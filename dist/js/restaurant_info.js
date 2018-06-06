@@ -1,11 +1,14 @@
 /* eslint-disable */
 let restaurant;
 var map;
+let clickedMap = false;
 
 /**
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  if (clickedMap) return;
+
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) {
       // Got an error!
@@ -16,8 +19,33 @@ window.initMap = () => {
         center: restaurant.latlng,
         scrollwheel: false
       });
-      fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      clickedMap = true;
+    }
+  });
+};
+
+window.initStaticMap = () => {
+  fetchRestaurantFromURL((error, restaurant) => {
+    if (error) {
+      // Got an error!
+      console.error(error);
+    } else {
+      let mapImg = document.createElement('img');
+      const mapDiv = document.getElementById('map');
+
+      let { width, height } = mapDiv.getBoundingClientRect();
+      let { lat, lng } = restaurant.latlng;
+
+      mapImg.src = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=16&size=${parseInt(width)}x${parseInt(height)}`;
+      mapImg.alt = `${restaurant.name} Restaurant Reviews`;
+      mapImg.height = height;
+      mapImg.width = width;
+      mapDiv.appendChild(mapImg);
+
+      // create dynamic map on map image click
+      mapDiv.addEventListener('click', initMap);
+      fillBreadcrumb();
     }
   });
 };

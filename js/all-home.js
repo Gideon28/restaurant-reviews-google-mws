@@ -14,7 +14,8 @@ class DBHelper {
 
   static get DATABASE_URL() {
     const port = 1337; // stage 2 API server
-    return `http://localhost:${port}/restaurants`;
+    const fetchUrl = `http://localhost:${port}/restaurants`;
+    return fetchUrl;
   }
 
   /**
