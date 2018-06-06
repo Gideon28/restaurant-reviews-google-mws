@@ -8,26 +8,38 @@ const cleanCSS = require('gulp-clean-css');
 const babel = require('gulp-babel');
 const critical = require('critical');
 const log = require('fancy-log');
+const concat = require('gulp-concat');
 
-gulp.task('default', ['copy-html', 'copy-images', 'styles'], function() {
+gulp.task('default', ['copy-html', 'copy-images', 'styles', 'home-scripts', 'restaurant-scripts', 'scripts'], function() {
   gulp.watch('sass/**/*/*.scss', ['styles']);
   // gulp.watch('js/**/*.js', ['lint', 'scripts']);
-  gulp.watch('js/**/*.js', ['scripts']);
+  gulp.watch('js/**/*.js', ['home-scripts', 'restaurant-scripts', 'scripts']);
   gulp.watch('./index.html', ['copy-html']);
   gulp.watch('./dist/index.html')
     .on('change', browserSync.reload);
 
   browserSync.init({
-    server: './dist'
+    server: './'
   });
 });
 
-gulp.task('scripts', function() {
+gulp.task('scripts',['home-scripts', 'restaurant-scripts'], function() {
   return gulp.src(['!js/main.bak.js', '!js/lazyload.js', 'js/**/*.js'])
     .pipe(babel())
     .pipe(minify())
     .pipe(gulp.dest('dist/js/'))
 })
+
+gulp.task('home-scripts', function() {
+  return gulp.src(['js/dbhelper.js', 'js/main.js', 'js/lazyload.js'])
+    .pipe(concat('all-home.js'))
+    .pipe(gulp.dest('./js'))
+});
+gulp.task('restaurant-scripts', function() {
+  return gulp.src(['js/dbhelper.js', 'js/restaurant-info.js'])
+    .pipe(concat('all-restaurant.js'))
+    .pipe(gulp.dest('./js'))
+});
 
 gulp.task('copy-html', function() {
   gulp.src('./index.html')
@@ -41,7 +53,8 @@ gulp.task('copy-images', function() {
 gulp.task('styles', function() {
   gulp.src('sass/**/*.scss')
     .pipe(sass({
-      includePaths: require('node-normalize-scss').includePaths
+      includePaths: require('node-normalize-scss').includePaths,
+      outputStyle: 'compressed'
     }).on('error', sass.logError))
     .pipe(autoprefixer({
       browsers: ['last 2 versions']
