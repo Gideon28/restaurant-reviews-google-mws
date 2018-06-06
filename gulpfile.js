@@ -6,6 +6,8 @@ const eslint = require('gulp-eslint');
 const minify = require('gulp-minify');
 const cleanCSS = require('gulp-clean-css');
 const babel = require('gulp-babel');
+const critical = require('critical');
+const log = require('fancy-log');
 
 gulp.task('default', ['styles'], function() {
   gulp.watch('sass/**/*/*.scss', ['styles']);
@@ -35,6 +37,18 @@ gulp.task('styles', function() {
     .pipe(cleanCSS())
     .pipe(gulp.dest('dist/css/'))
     .pipe(browserSync.stream());
+});
+
+gulp.task('critical', function(cb) {
+  critical.generate({
+      inline: true,
+      base: './',
+      src: 'index.html',
+      dest: 'index-critical.html',
+      width: 1300,
+      height: 900,
+      minify: true
+    });
 });
 
 gulp.task('lint', function() {

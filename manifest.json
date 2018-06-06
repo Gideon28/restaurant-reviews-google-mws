@@ -16,6 +16,11 @@
       "src": "/img/app-icon-4x.png",
       "type": "image/png",
       "sizes": "192x192"
+    },
+    {
+      "src": "/img/app-icon-580.png",
+      "type": "image/png",
+      "sizes": "580x580"
     }
   ],
   "start_url": "index.html?launcher=true",
