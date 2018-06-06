@@ -170,6 +170,11 @@ createRestaurantHTML = (restaurant, index, restaurantsCount) => {
   <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/img/${restaurant.id}-280_sml.jpg" alt="Image of ${restaurant.name} restaurant">
   </picture> */}
 
+	{/* <picture>
+  <source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
+  <img src="/img/${restaurant.id}-280_sml.jpg" alt="Image of ${restaurant.name} restaurant">
+  </picture> */}
+
 	const restaurantHtml = `
 		<picture>
 			<source srcset="/img/${restaurant.id}-540_sml_2x.jpg 2x">
