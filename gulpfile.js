@@ -26,18 +26,19 @@ gulp.task('default', ['copy-html', 'copy-images', 'styles', 'home-scripts', 'res
 gulp.task('scripts',['home-scripts', 'restaurant-scripts'], function() {
   return gulp.src(['!js/main.bak.js', '!js/lazyload.js', 'js/**/*.js'])
     .pipe(babel())
-    .pipe(minify())
     .pipe(gulp.dest('dist/js/'))
 })
 
 gulp.task('home-scripts', function() {
   return gulp.src(['js/dbhelper.js', 'js/main.js', 'js/lazyload.js'])
     .pipe(concat('all-home.js'))
+    .pipe(minify())
     .pipe(gulp.dest('./js'))
 });
 gulp.task('restaurant-scripts', function() {
-  return gulp.src(['js/dbhelper.js', 'js/restaurant-info.js'])
+  return gulp.src(['js/dbhelper.js', 'js/restaurant_info.js'])
     .pipe(concat('all-restaurant.js'))
+    .pipe(minify())
     .pipe(gulp.dest('./js'))
 });
 
